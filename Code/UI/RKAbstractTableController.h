@@ -439,6 +439,10 @@ typedef NSUInteger RKTableControllerState;
 - (void)tableController:(RKAbstractTableController *)tableController willDisplayCell:(UITableViewCell *)cell forObject:(id)object atIndexPath:(NSIndexPath *)indexPath;
 - (void)tableController:(RKAbstractTableController *)tableController didSelectCell:(UITableViewCell *)cell forObject:(id)object atIndexPath:(NSIndexPath *)indexPath;
 
+// ScrollView Delegate Forwarding
+
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView;
+
 @end
 
 #endif // TARGET_OS_IPHONE

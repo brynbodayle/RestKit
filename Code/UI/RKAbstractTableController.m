@@ -1353,6 +1353,11 @@ static NSString *lastUpdatedDateDictionaryKey = @"lastUpdatedDateDictionaryKey";
     return YES;
 }
 
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    [self.delegate scrollViewDidScroll:scrollView];
+}
+
 #pragma mark - Keyboard Notification methods
 
 - (void)resizeTableViewForKeyboard:(NSNotification *)notification
