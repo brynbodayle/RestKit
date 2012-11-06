@@ -660,6 +660,10 @@ BOOL RKObjectIsValueEqualToValue(id sourceValue, id destinationValue) {
     BOOL mappedRelationships = [self applyRelationshipMappings];
     if ((mappedAttributes || mappedRelationships) && _validationError == nil) {
         RKLogDebug(@"Finished mapping operation successfully...");
+        
+        if([self.destinationObject respondsToSelector:@selector(didUpdateObjectWithData:)])
+            [self.destinationObject performSelector:@selector(didUpdateObjectWithData:) withObject:self.sourceObject];
+            
         return YES;
     }
 
