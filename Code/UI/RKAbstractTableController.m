@@ -165,9 +165,9 @@ static NSString *lastUpdatedDateDictionaryKey = @"lastUpdatedDateDictionaryKey";
 - (void)dealloc
 {
     // Disconnect from the tableView
-    if (_tableView.delegate == self) _tableView.delegate = nil;
-    if (_tableView.dataSource == self) _tableView.dataSource = nil;
-    _tableView = nil;
+//    if (_tableView.delegate == self) _tableView.delegate = nil;
+//    if (_tableView.dataSource == self) _tableView.dataSource = nil;
+//    _tableView = nil;
 
     // Remove overlay and pull-to-refresh subviews
     [_stateOverlayImageView removeFromSuperview];
