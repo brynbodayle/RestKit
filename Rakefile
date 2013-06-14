@@ -53,7 +53,7 @@ def restkit_version
 end
 
 def apple_doc_command
-  "/usr/local/bin/appledoc -t ~/Library/Application\\ Support/appledoc -o Docs/API -p RestKit -v #{restkit_version} -c \"RestKit\" " +
+  "/usr/local/bin/appledoc -o Docs/API -p RestKit -v #{restkit_version} -c \"RestKit\" " +
   "--company-id org.restkit --warn-undocumented-object --warn-undocumented-member  --warn-empty-description  --warn-unknown-directive " +
   "--warn-invalid-crossref --warn-missing-arg --no-repeat-first-par "
 end
@@ -81,7 +81,7 @@ task :docs => 'docs:generate'
 namespace :appledoc do
   task :check do
     unless File.exists?('/usr/local/bin/appledoc')
-      "appledoc not found at /usr/local/bin/appledoc: Install via homebrew and try again: `brew install --HEAD appledoc`"
+      puts "appledoc not found at /usr/local/bin/appledoc: Install via homebrew and try again: `brew install --HEAD appledoc`"
       exit 1
     end
   end
