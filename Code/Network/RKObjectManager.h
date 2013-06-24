@@ -681,7 +681,7 @@ RKMappingResult, RKRequestDescriptor, RKResponseDescriptor;
  @see [RKRouter URLForObject:method:]
  @see [RKObjectManager appropriateObjectRequestOperationWithObject:method:path:parameters:]
  */
-- (void)postObject:(id)object
+- (RKObjectRequestOperation *)postObject:(id)object
               path:(NSString *)path
         parameters:(NSDictionary *)parameters
            success:(void (^)(RKObjectRequestOperation *operation, RKMappingResult *mappingResult))success
