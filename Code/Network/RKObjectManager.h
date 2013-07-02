@@ -598,7 +598,7 @@ RKMappingResult, RKRequestDescriptor, RKResponseDescriptor;
  
  @see [RKObjectManager appropriateObjectRequestOperationWithObject:method:path:parameters:]
  */
-- (void)getObjectsAtPath:(NSString *)path
+- (RKObjectRequestOperation *)getObjectsAtPath:(NSString *)path
               parameters:(NSDictionary *)parameters
                  success:(void (^)(RKObjectRequestOperation *operation, RKMappingResult *mappingResult))success
                  failure:(void (^)(RKObjectRequestOperation *operation, NSError *error))failure;
@@ -618,7 +618,7 @@ RKMappingResult, RKRequestDescriptor, RKResponseDescriptor;
  @see [RKRouter URLForRelationship:ofObject:method:]
  @see [RKObjectManager appropriateObjectRequestOperationWithObject:method:path:parameters:]
  */
-- (void)getObjectsAtPathForRelationship:(NSString *)relationshipName
+- (RKObjectRequestOperation *)getObjectsAtPathForRelationship:(NSString *)relationshipName
                                ofObject:(id)object
                              parameters:(NSDictionary *)parameters
                                 success:(void (^)(RKObjectRequestOperation *operation, RKMappingResult *mappingResult))success
@@ -699,7 +699,7 @@ RKMappingResult, RKRequestDescriptor, RKResponseDescriptor;
  @see [RKRouter URLForObject:method:]
  @see [RKObjectManager appropriateObjectRequestOperationWithObject:method:path:parameters:]
  */
-- (void)putObject:(id)object
+- (RKObjectRequestOperation *)putObject:(id)object
              path:(NSString *)path
        parameters:(NSDictionary *)parameters
           success:(void (^)(RKObjectRequestOperation *operation, RKMappingResult *mappingResult))success
@@ -737,7 +737,7 @@ RKMappingResult, RKRequestDescriptor, RKResponseDescriptor;
  @see [RKRouter URLForObject:method:]
  @see [RKObjectManager appropriateObjectRequestOperationWithObject:method:path:parameters:]
  */
-- (void)deleteObject:(id)object
+- (RKObjectRequestOperation *)deleteObject:(id)object
                 path:(NSString *)path
           parameters:(NSDictionary *)parameters
              success:(void (^)(RKObjectRequestOperation *operation, RKMappingResult *mappingResult))success

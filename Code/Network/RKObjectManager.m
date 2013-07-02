@@ -619,7 +619,7 @@ static NSString *RKMIMETypeFromAFHTTPClientParameterEncoding(AFHTTPClientParamet
     return [NSURL URLWithString:path relativeToURL:self.baseURL];
 }
 
-- (void)getObjectsAtPathForRelationship:(NSString *)relationshipName
+- (RKObjectRequestOperation *)getObjectsAtPathForRelationship:(NSString *)relationshipName
                                ofObject:(id)object
                              parameters:(NSDictionary *)parameters
                                 success:(void (^)(RKObjectRequestOperation *operation, RKMappingResult *mappingResult))success
@@ -633,6 +633,8 @@ static NSString *RKMIMETypeFromAFHTTPClientParameterEncoding(AFHTTPClientParamet
     operation.mappingMetadata = @{ @"routing": @{ @"parameters": interpolatedParameters, @"route": route } };
     [operation setCompletionBlockWithSuccess:success failure:failure];
     [self enqueueObjectRequestOperation:operation];
+    
+    return operation;
 }
 
 - (void)getObjectsAtPathForRouteNamed:(NSString *)routeName
@@ -655,7 +657,7 @@ static NSString *RKMIMETypeFromAFHTTPClientParameterEncoding(AFHTTPClientParamet
 
 }
 
-- (void)getObjectsAtPath:(NSString *)path
+- (RKObjectRequestOperation *)getObjectsAtPath:(NSString *)path
               parameters:(NSDictionary *)parameters
                  success:(void (^)(RKObjectRequestOperation *operation, RKMappingResult *mappingResult))success
                  failure:(void (^)(RKObjectRequestOperation *operation, NSError *error))failure
@@ -664,6 +666,8 @@ static NSString *RKMIMETypeFromAFHTTPClientParameterEncoding(AFHTTPClientParamet
     RKObjectRequestOperation *operation = [self appropriateObjectRequestOperationWithObject:nil method:RKRequestMethodGET path:path parameters:parameters];
     [operation setCompletionBlockWithSuccess:success failure:failure];
     [self enqueueObjectRequestOperation:operation];
+    
+    return operation;
 }
 
 - (void)getObject:(id)object
@@ -692,7 +696,7 @@ static NSString *RKMIMETypeFromAFHTTPClientParameterEncoding(AFHTTPClientParamet
     return operation;
 }
 
-- (void)putObject:(id)object
+- (RKObjectRequestOperation *)putObject:(id)object
              path:(NSString *)path
        parameters:(NSDictionary *)parameters
           success:(void (^)(RKObjectRequestOperation *operation, RKMappingResult *mappingResult))success
@@ -702,6 +706,8 @@ static NSString *RKMIMETypeFromAFHTTPClientParameterEncoding(AFHTTPClientParamet
     RKObjectRequestOperation *operation = [self appropriateObjectRequestOperationWithObject:object method:RKRequestMethodPUT path:path parameters:parameters];
     [operation setCompletionBlockWithSuccess:success failure:failure];
     [self enqueueObjectRequestOperation:operation];
+    
+    return operation;
 }
 
 - (void)patchObject:(id)object
@@ -716,7 +722,7 @@ static NSString *RKMIMETypeFromAFHTTPClientParameterEncoding(AFHTTPClientParamet
     [self enqueueObjectRequestOperation:operation];
 }
 
-- (void)deleteObject:(id)object
+- (RKObjectRequestOperation *)deleteObject:(id)object
                 path:(NSString *)path
           parameters:(NSDictionary *)parameters
              success:(void (^)(RKObjectRequestOperation *operation, RKMappingResult *mappingResult))success
@@ -726,6 +732,8 @@ static NSString *RKMIMETypeFromAFHTTPClientParameterEncoding(AFHTTPClientParamet
     RKObjectRequestOperation *operation = [self appropriateObjectRequestOperationWithObject:object method:RKRequestMethodDELETE path:path parameters:parameters];
     [operation setCompletionBlockWithSuccess:success failure:failure];
     [self enqueueObjectRequestOperation:operation];
+    
+    return operation;
 }
 
 - (RKPaginator *)paginatorWithPathPattern:(NSString *)pathPattern
