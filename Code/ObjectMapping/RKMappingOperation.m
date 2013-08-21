@@ -886,6 +886,13 @@ static NSString *const RKRootKeyPathPrefix = @"@root.";
 
         // Handle case where incoming content is a single object, but we want a collection
         Class relationshipClass = [self.objectMapping classForKeyPath:relationshipMapping.destinationKeyPath];
+        
+        if(!relationshipClass && [value count] == 0) {
+            
+            NSLog(@"%@", NSStringFromClass(relationshipClass));
+            continue;
+        }
+                
         BOOL mappingToCollection = RKClassIsCollection(relationshipClass);
         if (mappingToCollection && !RKObjectIsCollection(value)) {
             Class orderedSetClass = NSClassFromString(@"NSOrderedSet");
