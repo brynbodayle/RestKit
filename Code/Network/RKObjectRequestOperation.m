@@ -181,6 +181,8 @@ static void *RKOperationFinishDate = &RKOperationFinishDate;
 
 - (void)HTTPOperationDidFinish:(NSNotification *)notification
 {
+    return;
+    
     RKHTTPRequestOperation *operation = [notification object];    
     if (![operation isKindOfClass:[AFHTTPRequestOperation class]]) return;
     
