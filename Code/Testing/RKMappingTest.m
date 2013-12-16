@@ -181,11 +181,15 @@ NSString * const RKMappingTestVerificationFailureException = @"RKMappingTestVeri
 
 - (RKMappingTestEvent *)eventMatchingExpectation:(id)expectation
 {
+#ifdef _COREDATADEFINES_H
     Class connectionTestExpectation = NSClassFromString(@"RKConnectionTestExpectation");
+#endif
     for (RKMappingTestEvent *event in [self.events copy]) {
         if ([expectation isKindOfClass:[RKPropertyMappingTestExpectation class]]) {
             RKPropertyMappingTestExpectation *propertyExpectation = (RKPropertyMappingTestExpectation *) expectation;
             if ([event.sourceKeyPath isEqualToString:propertyExpectation.sourceKeyPath] && [event.destinationKeyPath isEqualToString:propertyExpectation.destinationKeyPath]) {
+                return event;
+            } else if ((event.sourceKeyPath == nil && propertyExpectation.sourceKeyPath == nil) && ([event.destinationKeyPath isEqualToString:propertyExpectation.destinationKeyPath])) {
                 return event;
             }
         }
@@ -368,12 +372,11 @@ NSString * const RKMappingTestVerificationFailureException = @"RKMappingTestVeri
         RKMappingOperation *mappingOperation = [[RKMappingOperation alloc] initWithSourceObject:sourceObject destinationObject:self.destinationObject mapping:self.mapping];
         id<RKMappingOperationDataSource> dataSource = [self dataSourceForMappingOperation:mappingOperation];
         mappingOperation.dataSource = dataSource;
-        NSError *error = nil;
         mappingOperation.delegate = self;
         [mappingOperation start];
         if (mappingOperation.error) {
             [NSException raise:NSInternalInconsistencyException format:@"%p: failed with error: %@\n%@ during mapping from %@ to %@ with mapping %@",
-             self, error, [self description], self.sourceObject, self.destinationObject, self.mapping];
+             self, mappingOperation.error, [self description], self.sourceObject, self.destinationObject, self.mapping];
         }
         
         // Let the connection operations execute to completion
