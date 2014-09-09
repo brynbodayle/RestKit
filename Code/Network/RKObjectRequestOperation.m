@@ -59,34 +59,6 @@ static NSString *RKLogTruncateString(NSString *string)
        (long) maxMessageLength];
 }
 
-static NSString *RKStringFromStreamStatus(NSStreamStatus streamStatus)
-{
-    switch (streamStatus) {
-        case NSStreamStatusNotOpen:     return @"Not Open";
-        case NSStreamStatusOpening:     return @"Opening";
-        case NSStreamStatusOpen:        return @"Open";
-        case NSStreamStatusReading:     return @"Reading";
-        case NSStreamStatusWriting:     return @"Writing";
-        case NSStreamStatusAtEnd:       return @"At End";
-        case NSStreamStatusClosed:      return @"Closed";
-        case NSStreamStatusError:       return @"Error";
-        default:                        break;
-    }
-    return nil;
-}
-
-static NSString *RKStringDescribingStream(NSStream *stream)
-{
-    NSString *errorDescription = ([stream streamStatus] == NSStreamStatusError) ? [NSString stringWithFormat:@", error=%@", [stream streamError]] : @"";
-    if ([stream isKindOfClass:[NSInputStream class]]) {
-        return [NSString stringWithFormat:@"<%@: %p hasBytesAvailable=%@, status='%@'%@>", [stream class], stream, [(NSInputStream *)stream hasBytesAvailable] ? @"YES" : @"NO", RKStringFromStreamStatus([stream streamStatus]), errorDescription];
-    } else if ([stream isKindOfClass:[NSOutputStream class]]) {
-        return [NSString stringWithFormat:@"<%@: %p hasSpaceAvailable=%@, status='%@'%@>", [stream class], stream, [(NSOutputStream *)stream hasSpaceAvailable] ? @"YES" : @"NO", RKStringFromStreamStatus([stream streamStatus]), errorDescription];
-    } else {
-        return [stream description];
-    }
-}
-
 @interface NSCachedURLResponse (RKLeakFix)
 
 - (NSData *)rkData;
@@ -199,7 +171,8 @@ static void *RKOperationFinishDate = &RKOperationFinishDate;
     NSString *statusCodeAndElapsedTime = statusCodeString ? [NSString stringWithFormat:@"(%ld %@) %@", (long)[operation.response statusCode], statusCodeString, elapsedTimeString] : [NSString stringWithFormat:@"(%ld) %@", (long)[operation.response statusCode], elapsedTimeString];
     if (operation.error) {
         if ((_RKlcl_component_level[(__RKlcl_log_symbol(RKlcl_cRestKitNetwork))]) >= (__RKlcl_log_symbol(RKlcl_vTrace))) {
-            RKLogError(@"%@ '%@' %@:\nerror=%@\nresponse.body=%@", [operation.request HTTPMethod], [[operation.request URL] absoluteString], statusCodeAndElapsedTime, operation.error, operation.responseString);
+            RKLogError(@"%@ '%@' %@:\nerror=%@", [operation.request HTTPMethod], [[operation.request URL] absoluteString], statusCodeAndElapsedTime, operation.error);
+            RKLogDebug(@"response.body=%@", operation.responseString);
         } else {
             if (operation.error.code == NSURLErrorCancelled) {
                 RKLogError(@"%@ '%@' %@: Cancelled", [operation.request HTTPMethod], [[operation.request URL] absoluteString], statusCodeAndElapsedTime);
@@ -233,7 +206,8 @@ static void *RKOperationFinishDate = &RKOperationFinishDate;
     NSString *statusCodeAndElapsedTime = [NSString stringWithFormat:@"(%ld%@/ %lu objects) %@", (long)[HTTPRequestOperation.response statusCode], statusCodeDescription, (unsigned long) [objectRequestOperation.mappingResult count], elapsedTimeString];
     if (objectRequestOperation.error) {
         if ((_RKlcl_component_level[(__RKlcl_log_symbol(RKlcl_cRestKitNetwork))]) >= (__RKlcl_log_symbol(RKlcl_vTrace))) {
-            RKLogError(@"%@ '%@' %@:\nerror=%@\nresponse.body=%@", [HTTPRequestOperation.request HTTPMethod], [[HTTPRequestOperation.request URL] absoluteString], statusCodeAndElapsedTime, objectRequestOperation.error, HTTPRequestOperation.responseString);
+            RKLogError(@"%@ '%@' %@:\nerror=%@", [HTTPRequestOperation.request HTTPMethod], [[HTTPRequestOperation.request URL] absoluteString], statusCodeAndElapsedTime, objectRequestOperation.error);
+            RKLogDebug(@"response.body=%@", HTTPRequestOperation.responseString);
         } else {
             if (objectRequestOperation.error.code == NSURLErrorCancelled) {
                 RKLogError(@"%@ '%@' %@: Cancelled", [HTTPRequestOperation.request HTTPMethod], [[HTTPRequestOperation.request URL] absoluteString], statusCodeAndElapsedTime);
@@ -272,11 +246,6 @@ static void RKDecrementNetworkAcitivityIndicator()
     #if __IPHONE_OS_VERSION_MIN_REQUIRED
         [[AFNetworkActivityIndicatorManager sharedManager] decrementActivityCount];
     #endif
-}
-
-static inline NSString *RKDescriptionForRequest(NSURLRequest *request)
-{
-    return [NSString stringWithFormat:@"%@ '%@'", request.HTTPMethod, [request.URL absoluteString]];
 }
 
 static NSIndexSet *RKAcceptableStatusCodesFromResponseDescriptors(NSArray *responseDescriptors)
@@ -384,7 +353,7 @@ static NSString *RKStringDescribingURLResponseWithData(NSURLResponse *response, 
         self.HTTPRequestOperation.successCallbackQueue = [[self class] dispatchQueue];
         self.HTTPRequestOperation.failureCallbackQueue = [[self class] dispatchQueue];
         
-        __weak __typeof(&*self)weakSelf = self;
+        __weak __typeof(self)weakSelf = self;
         self.stateMachine = [[RKOperationStateMachine alloc] initWithOperation:self dispatchQueue:[[self class] dispatchQueue]];
         [self.stateMachine setExecutionBlock:^{
             [[NSNotificationCenter defaultCenter] postNotificationName:RKObjectRequestOperationDidStartNotification object:weakSelf];
@@ -529,7 +498,7 @@ static NSString *RKStringDescribingURLResponseWithData(NSURLResponse *response, 
 
 - (void)execute
 {
-    __weak __typeof(&*self)weakSelf = self;    
+    __weak __typeof(self)weakSelf = self;    
     
     [self.HTTPRequestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (weakSelf.isCancelled) {

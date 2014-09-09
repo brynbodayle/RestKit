@@ -29,7 +29,10 @@
 #import "RKDictionaryUtilities.h"
 
 #ifdef _COREDATADEFINES_H
+#if __has_include("RKCoreData.h")
+#define RKCoreDataIncluded
 #import "RKManagedObjectMappingOperationDataSource.h"
+#endif
 #endif
 
 // Set Logging Component
@@ -326,7 +329,7 @@ static NSMutableDictionary *RKRegisteredResponseMapperOperationDataSourceClasses
         parsedBody = self.willMapDeserializedResponseBlock(parsedBody);
         if (! parsedBody) {
             NSDictionary *userInfo = @{ NSLocalizedDescriptionKey: @"Mapping was declined due to a `willMapDeserializedResponseBlock` returning nil." };
-            self.error = [NSError errorWithDomain:RKErrorDomain code:RKMappingErrorFromMappingResult userInfo:userInfo];
+            self.error = [NSError errorWithDomain:RKErrorDomain code:RKMappingErrorMappingDeclined userInfo:userInfo];
             RKLogError(@"Failed to parse response data: %@", [error localizedDescription]);
             [self willFinish];
             return;
@@ -390,7 +393,7 @@ static NSMutableDictionary *RKRegisteredResponseMapperOperationDataSourceClasses
 
 @end
 
-#ifdef _COREDATADEFINES_H
+#ifdef RKCoreDataIncluded
 
 static inline NSManagedObjectID *RKObjectIDFromObjectIfManaged(id object)
 {

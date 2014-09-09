@@ -347,7 +347,7 @@ static NSString * const RKPaginatorTestResourcePathPatternWithOffset = @"/pagina
     id mockPaginator = [OCMockObject partialMockForObject:paginator];
     BOOL loaded = NO;
     [[[mockPaginator stub] andReturnValue:OCMOCK_VALUE(loaded)] isLoaded];
-    STAssertThrows([mockPaginator hasNextPage], @"Expected exception due to isLoaded == NO");
+    XCTAssertThrows([mockPaginator hasNextPage], @"Expected exception due to isLoaded == NO");
 }
 
 - (void)testHasNextPageRaisesExpectionWhenPageCountIsUnknown
@@ -358,7 +358,7 @@ static NSString * const RKPaginatorTestResourcePathPatternWithOffset = @"/pagina
     [[[mockPaginator stub] andReturnValue:OCMOCK_VALUE(loaded)] isLoaded];
     BOOL hasPageCount = NO;
     [[[mockPaginator stub] andReturnValue:OCMOCK_VALUE(hasPageCount)] hasPageCount];
-    STAssertThrows([mockPaginator hasNextPage], @"Expected exception due to pageCount == NSUIntegerMax");
+    XCTAssertThrows([mockPaginator hasNextPage], @"Expected exception due to pageCount == NSUIntegerMax");
 }
 
 - (void)testHasPreviousPageRaisesExpectionWhenNotLoaded
@@ -367,7 +367,7 @@ static NSString * const RKPaginatorTestResourcePathPatternWithOffset = @"/pagina
     id mockPaginator = [OCMockObject partialMockForObject:paginator];
     BOOL loaded = NO;
     [[[mockPaginator stub] andReturnValue:OCMOCK_VALUE(loaded)] isLoaded];
-    STAssertThrows([mockPaginator hasPreviousPage], @"Expected exception due to isLoaded == NO");
+    XCTAssertThrows([mockPaginator hasPreviousPage], @"Expected exception due to isLoaded == NO");
 }
 
 - (void)testKnowledgeOfPreviousPage
@@ -430,14 +430,14 @@ static NSString * const RKPaginatorTestResourcePathPatternWithOffset = @"/pagina
 
 - (void)testOffsetNumberOfNextPage
 {
-    NSURLRequest *request = [NSURLRequest requestWithURL:self.paginationURL];
+    NSURLRequest *request = [NSURLRequest requestWithURL:self.paginationOffsetURL];
     RKPaginator *paginator = [[RKPaginator alloc] initWithRequest:request paginationMapping:self.paginationMapping responseDescriptors:@[ self.responseDescriptor ]];
     [paginator loadPage:1];
     [paginator waitUntilFinished];
     expect(paginator.offset).to.equal(0);
     [paginator loadNextPage];
     [paginator waitUntilFinished];
-    expect(paginator.offset).to.equal(3);
+    expect(paginator.offset).to.equal(25);
 }
 
 - (void)testLoadingAPageWhileOtherPageLoads

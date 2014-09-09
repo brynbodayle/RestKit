@@ -12,7 +12,7 @@
 #import "RKHuman.h"
 #import "RKCat.h"
 
-@interface RKMappingTestTest : SenTestCase
+@interface RKMappingTestTest : XCTestCase
 @property (nonatomic, strong) id objectRepresentation;
 @property (nonatomic, strong) RKMappingTest *mappingTest;
 @end
@@ -72,8 +72,7 @@
     [self.mappingTest addExpectation:[RKPropertyMappingTestExpectation expectationWithSourceKeyPath:nil
                                                                                  destinationKeyPath:@"coordinate"
                                                                                               value:coordinate]];
-    expect([self.mappingTest evaluate]).to.equal(NO);
-
+    expect([self.mappingTest evaluate]).to.equal(YES);
 }
 
 - (void)testMappingTestForRelationshipWithBlock
@@ -211,6 +210,18 @@
     [self.mappingTest addExpectation:[RKPropertyMappingTestExpectation expectationWithSourceKeyPath:@"favorite_cat"
                                                                                  destinationKeyPath:@"favoriteCat"
                                                                                               value:self.asia]];
+    expect([self.mappingTest evaluate]).to.equal(YES);
+}
+
+- (void)testMappingTestForCoreDataRelationshipFromNilSourceKeyPath
+{
+    RKEntityMapping *catMapping = [RKEntityMapping mappingForEntityForName:@"Cat" inManagedObjectStore:self.managedObjectStore];
+    catMapping.identificationAttributes = @[ @"name" ];
+    [catMapping addAttributeMappingsFromDictionary:@{ @"id": @"railsID" }];
+    [catMapping addAttributeMappingsFromArray:@[ @"name" ]];
+    [self.entityMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:nil toKeyPath:@"favoriteCat" withMapping:catMapping]];
+    [self.mappingTest addExpectation:[RKPropertyMappingTestExpectation expectationWithSourceKeyPath:nil
+                                                                                 destinationKeyPath:@"favoriteCat"]];
     expect([self.mappingTest evaluate]).to.equal(YES);
 }
 
